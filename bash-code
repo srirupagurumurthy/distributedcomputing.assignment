@@ -1,0 +1,14 @@
+mkdir mini-distributed-system
+cd mini-distributed-system
+mkdir java-version python-version result
+
+# Paste files as per structure above
+# Then run once to generate result files:
+# python python-version/coordinator.py etc.
+
+git init
+git add .
+git commit -m "Mini Distributed System - Java + Python - Scalability, Communication, Failure Handling, Resource Sharing - CS3551"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/mini-distributed-system.git
+git push -u origin main
