@@ -1,0 +1,46 @@
+import socket, threading, time, sys, random
+
+node_id = sys.argv[1] if len(sys.argv)>1 else f"Node-{random.randint(1,99)}"
+clock = 0
+s = socket.socket()
+s.connect(("localhost", 5000))
+print(f"[{node_id}] Connected to Coordinator")
+
+def heartbeat():
+    global clock
+    while True:
+        time.sleep(3)
+        clock += 1
+        try: s.send(f"HEARTBEAT|{node_id}|{clock}\n".encode())
+        except: break
+
+def listen():
+    global clock
+    while True:
+        try:
+            data = s.recv(1024).decode()
+            if not data: break
+            for line in data.split("\n"):
+                if "GRANTED" in line and node_id in line:
+                    print(f"[{node_id}] *** ENTERING CS ***")
+                    # Critical Section - Resource Sharing
+                    with open("shared_file.txt", "a") as f:
+                        f.write(f"{node_id} wrote at {time.ctime()} clock={clock}\n")
+                    time.sleep(2) # Simulate work
+                    print(f"[{node_id}] *** LEAVING CS ***")
+                    clock += 1
+                    s.send(f"RELEASE|{node_id}|{clock}\n".encode())
+                else:
+                    print(f"[{node_id} RECV] {line.strip()}")
+        except Exception as e:
+            print(f"Listen error {e}"); break
+
+threading.Thread(target=heartbeat, daemon=True).start()
+threading.Thread(target=listen, daemon=True).start()
+
+# Simulate random resource requests - Scalability test
+while True:
+    time.sleep(5 + random.randint(0,5))
+    clock += 1
+    print(f"[{node_id}] --> REQUEST at clock {clock}")
+    s.send(f"REQUEST|{node_id}|{clock}\n".encode())
