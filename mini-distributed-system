@@ -1,0 +1,14 @@
+mini-distributed-system/
+├── README.md
+├── REPORT.md
+├── result/
+│   ├── shared_file.txt (proves Mutual Exclusion)
+│   ├── checkpoint.log (proves Failure Handling)
+│   └── screenshots/ (your terminal screenshots)
+├── java-version/
+│   ├── Coordinator.java
+│   ├── Node.java
+│   └── ClientTest.java
+└── python-version/
+    ├── coordinator.py
+    └── node.py
